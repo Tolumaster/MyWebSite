@@ -8,9 +8,6 @@
 </head>
 <body>
 
-  <div class="background-glow glow-1"></div>
-  <div class="background-glow glow-2"></div>
-
   <div class="container">
     <div class="header">
       <span class="badge">AI + OCR Destekli</span>
@@ -21,14 +18,14 @@
     </div>
 
     <div class="upload-box card">
-  <div class="upload-top">
-    <label for="imageInput" class="upload-label">📷 Fotoğraf Yükle</label>
-    <span id="fileName" class="file-name">Henüz dosya seçilmedi</span>
-    <input type="file" id="imageInput" accept="image/*" />
-  </div>
+      <div class="upload-top">
+        <label for="imageInput" class="upload-label">📷 Fotoğraf Yükle</label>
+        <span id="fileName" class="file-name">Henüz dosya seçilmedi</span>
+        <input type="file" id="imageInput" accept="image/*" />
+      </div>
 
-  <button id="ocrBtn" class="secondary-btn full-btn">Fotoğraftan Yazı Çıkar</button>
-</div>
+      <button id="ocrBtn" class="secondary-btn full-btn">Fotoğraftan Yazı Çıkar</button>
+    </div>
 
     <div class="editor-box card">
       <label class="section-title" for="noteInput">Paragraf</label>
@@ -45,7 +42,13 @@
         <h2>Sonuç</h2>
         <span class="output-tag">Analiz</span>
       </div>
-      <div id="output">Henüz bir işlem yapılmadı.</div>
+
+      <div id="outputCards" class="output-cards">
+        <div class="result-card">
+          <h3>Durum</h3>
+          <p>Henüz bir işlem yapılmadı.</p>
+        </div>
+      </div>
     </div>
   </div>
 

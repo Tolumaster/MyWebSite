@@ -1,6 +1,4 @@
 const noteInput = document.getElementById("noteInput");
-const output = document.getElementById("output");
-
 const analyzeBtn = document.getElementById("analyzeBtn");
 const clearBtn = document.getElementById("clearBtn");
 
@@ -8,7 +6,83 @@ const imageInput = document.getElementById("imageInput");
 const ocrBtn = document.getElementById("ocrBtn");
 const fileName = document.getElementById("fileName");
 
-const OPENROUTER_API_KEY = "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";
+const outputCards = document.getElementById("outputCards");
+
+const OPENROUTER_API_KEY = "BURAYA_KEY";
+
+function setDefaultOutput(message = "Henüz bir işlem yapılmadı.") {
+  outputCards.innerHTML = `
+    <div class="result-card">
+      <h3>Durum</h3>
+      <p>${message}</p>
+    </div>
+  `;
+}
+
+function createCard(title, content, isList = false) {
+  if (!content || content.trim() === "") return "";
+
+  if (isList) {
+    const items = content
+      .split("\n")
+      .map(item => item.replace(/^- /, "").trim())
+      .filter(Boolean)
+      .map(item => `<li>${item}</li>`)
+      .join("");
+
+    return `
+      <div class="result-card">
+        <h3>${title}</h3>
+        <ul>${items}</ul>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="result-card">
+      <h3>${title}</h3>
+      <p>${content}</p>
+    </div>
+  `;
+}
+
+function renderAnalysis(text) {
+  const sections = {
+    "Başlık": "",
+    "Konu": "",
+    "Ana Fikir": "",
+    "Yardımcı Düşünceler": "",
+    "Kısa Özet": "",
+    "Yorum": "",
+    "Soru Çözüm İpucu": ""
+  };
+
+  let currentKey = null;
+  const lines = text.split("\n");
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+
+    if (sections.hasOwnProperty(trimmed.replace(":", "")) && trimmed.endsWith(":")) {
+      currentKey = trimmed.replace(":", "");
+      continue;
+    }
+
+    if (currentKey) {
+      sections[currentKey] += (sections[currentKey] ? "\n" : "") + trimmed;
+    }
+  }
+
+  outputCards.innerHTML = `
+    ${createCard("Başlık", sections["Başlık"])}
+    ${createCard("Konu", sections["Konu"])}
+    ${createCard("Ana Fikir", sections["Ana Fikir"])}
+    ${createCard("Yardımcı Düşünceler", sections["Yardımcı Düşünceler"], true)}
+    ${createCard("Kısa Özet", sections["Kısa Özet"])}
+    ${createCard("Yorum", sections["Yorum"])}
+    ${createCard("Soru Çözüm İpucu", sections["Soru Çözüm İpucu"])}
+  `;
+}
 
 async function askAI(prompt) {
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -46,11 +120,11 @@ analyzeBtn.addEventListener("click", async function () {
   const text = noteInput.value.trim();
 
   if (!text) {
-    output.textContent = "Lütfen önce bir paragraf gir.";
+    setDefaultOutput("Lütfen önce bir paragraf gir.");
     return;
   }
 
-  output.textContent = "Paragraf analiz ediliyor...";
+  setDefaultOutput("Paragraf analiz ediliyor...");
 
   try {
     const result = await askAI(`
@@ -93,9 +167,9 @@ Paragraf:
 ${text}
     `);
 
-    output.textContent = result;
+    renderAnalysis(result);
   } catch (error) {
-    output.textContent = "Bir hata oluştu:\n" + error.message;
+    setDefaultOutput("Bir hata oluştu: " + error.message);
   }
 });
 
@@ -111,11 +185,11 @@ ocrBtn.addEventListener("click", async function () {
   const file = imageInput.files[0];
 
   if (!file) {
-    output.textContent = "Lütfen önce bir fotoğraf seç.";
+    setDefaultOutput("Lütfen önce bir fotoğraf seç.");
     return;
   }
 
-  output.textContent = "Fotoğraftaki yazı okunuyor...";
+  setDefaultOutput("Fotoğraftaki yazı okunuyor...");
 
   try {
     const worker = await Tesseract.createWorker("tur+eng");
@@ -126,14 +200,14 @@ ocrBtn.addEventListener("click", async function () {
     await worker.terminate();
 
     if (!text.trim()) {
-      output.textContent = "Fotoğraftan okunabilir bir metin çıkarılamadı.";
+      setDefaultOutput("Fotoğraftan okunabilir bir metin çıkarılamadı.");
       return;
     }
 
     noteInput.value = text.trim();
-    output.textContent = "Fotoğraftaki yazı başarıyla metin alanına aktarıldı.";
+    setDefaultOutput("Fotoğraftaki yazı başarıyla metin alanına aktarıldı.");
   } catch (error) {
-    output.textContent = "OCR sırasında bir hata oluştu:\n" + error.message;
+    setDefaultOutput("OCR sırasında bir hata oluştu: " + error.message);
   }
 });
 
@@ -141,5 +215,7 @@ clearBtn.addEventListener("click", function () {
   noteInput.value = "";
   imageInput.value = "";
   fileName.textContent = "Henüz dosya seçilmedi";
-  output.textContent = "Henüz bir işlem yapılmadı.";
+  setDefaultOutput();
 });
+
+setDefaultOutput();

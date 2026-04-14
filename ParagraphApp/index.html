@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Akıllı Paragraf Çözme Uygulaması</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="background-glow glow-1"></div>
+  <div class="background-glow glow-2"></div>
+
+  <div class="container">
+    <div class="header">
+      <span class="badge">AI + OCR Destekli</span>
+      <h1>Akıllı Paragraf Çözme Uygulaması</h1>
+      <p class="subtitle">
+        Paragrafı analiz et, ana fikri çıkar, yardımcı düşünceleri bul ve soru çözüm ipucu al.
+      </p>
+    </div>
+
+    <div class="upload-box card">
+  <div class="upload-top">
+    <label for="imageInput" class="upload-label">📷 Fotoğraf Yükle</label>
+    <span id="fileName" class="file-name">Henüz dosya seçilmedi</span>
+    <input type="file" id="imageInput" accept="image/*" />
+  </div>
+
+  <button id="ocrBtn" class="secondary-btn full-btn">Fotoğraftan Yazı Çıkar</button>
+</div>
+
+    <div class="editor-box card">
+      <label class="section-title" for="noteInput">Paragraf</label>
+      <textarea id="noteInput" placeholder="Paragrafı buraya yaz..."></textarea>
+
+      <div class="buttons">
+        <button id="analyzeBtn" class="primary-btn">Analiz Et</button>
+        <button id="clearBtn" class="danger-btn">Temizle</button>
+      </div>
+    </div>
+
+    <div class="output-box card">
+      <div class="output-header">
+        <h2>Sonuç</h2>
+        <span class="output-tag">Analiz</span>
+      </div>
+      <div id="output">Henüz bir işlem yapılmadı.</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

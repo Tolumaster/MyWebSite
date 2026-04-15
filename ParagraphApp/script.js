@@ -8,7 +8,7 @@ const fileName = document.getElementById("fileName");
 
 const outputCards = document.getElementById("outputCards");
 
-const OPENROUTER_API_KEY = "BURAYA_KEY";
+const OPENROUTER_API_KEY = "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";
 
 function setDefaultOutput(message = "Henüz bir işlem yapılmadı.") {
   outputCards.innerHTML = `
